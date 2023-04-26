@@ -34,7 +34,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="suma">
     <property name="geometry">
      <rect>
       <x>110</x>
@@ -47,7 +47,7 @@
      <string>SUMA</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_2">
+   <widget class="QPushButton" name="division">
     <property name="geometry">
      <rect>
       <x>540</x>
@@ -60,7 +60,7 @@
      <string>DIVISIÓN</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_3">
+   <widget class="QPushButton" name="producto">
     <property name="geometry">
      <rect>
       <x>400</x>
@@ -73,7 +73,7 @@
      <string>PRODUCTO</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_4">
+   <widget class="QPushButton" name="resta">
     <property name="geometry">
      <rect>
       <x>260</x>
