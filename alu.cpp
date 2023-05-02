@@ -4,8 +4,6 @@ Alu::Alu(float n1, float n2)
 {
 this->num1.decimal = n1;
 this->num2.decimal = n2;
-num1.decimal=5.25;
-
 
 }
 void Alu::suma(){
@@ -84,8 +82,7 @@ void Alu::suma(){
         }
     }
 
-    //paso10
-
+    //paso104
     int k = 0;
     unsigned int aux = p;
 
@@ -124,7 +121,6 @@ void Alu::suma(){
     }
 
     //paso11
-
     if((r == 1 && st == 1) || (r == 1 && st == 0 && ((p>>0)&1))){
         p = p + 1;
         int acarreo2 = ((p>>n)&1);
@@ -158,4 +154,13 @@ unsigned int Alu:: comp2(unsigned int mantisaB){
 
     return mantisaB;
 }
+
+
+
+
+
+
+
+
+
 

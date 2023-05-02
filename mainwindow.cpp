@@ -18,6 +18,10 @@ MainWindow::~MainWindow()
 void MainWindow::on_suma_clicked()
 {
 
+
+    float n1= this->ui->op1dec->text().toFloat();
+    float n2 = this->ui->op2dec->text().toFloat();
+
 }
 
 
