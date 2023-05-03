@@ -7,12 +7,19 @@ class Alu
 public:
     Alu(float n1, float n2);
     void suma();
+    void producto();
+    void algoritmoProductoSinSigno(unsigned int A, unsigned int B);
     unsigned int comp2(unsigned int mantisaB);
 private:
+    bool desbordamiento = false;
+    bool overFlow = false;;
+    bool underFlow = false;
     int n;
     int g;
     int st;
     int r;
+    int as;
+    int ps;
     struct binario{
         unsigned int mantisa :23;
         unsigned int signo:1;

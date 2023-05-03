@@ -11,6 +11,8 @@ void Alu::suma(){
     unsigned int exponenteSuma;
     unsigned int signoSuma;
     unsigned int mantisaSuma;
+    unsigned int as;
+    unsigned int ps;
     unsigned int mantisa1;
     unsigned int mantisa2;
     bool intercambio = false;
@@ -147,6 +149,134 @@ void Alu::suma(){
 
 }
 
+void Alu::producto(){
+    unsigned int signoProd;
+    unsigned int exponenteProd;
+    unsigned int mantisaProd;
+    unsigned int mantisa1 = this->num1.bits.mantisa;
+    unsigned int mantisa2 = this->num2.bits.mantisa;
+
+    //paso1
+    signoProd = this->num1.bits.signo ^ this->num2.bits.signo;
+
+    //paso2
+    exponenteProd = (this->num1.bits.exponente - 127) + (this->num2.bits.exponente - 127) + 127;
+
+        //anyadimos en uno al principio de la mantisa
+    mantisa1 = mantisa1|8388608;
+    mantisa2 = mantisa2|8388608;
+
+    //paso3
+
+        //i - algoritmo producto sin signo
+    this->algoritmoProductoSinSigno(mantisa1, mantisa2);
+
+        //ii - se comprueba si desplazar P un bit a la izq o sumar 1 al exponente del producto
+    if(!((ps>>23)&1)){
+        ps = ps << 1;
+    }else{
+        exponenteProd = exponenteProd +1;
+    }
+
+        //iii - Bit de redondeo
+    int r = ((as>>23)&1);
+
+        //iv - Bit sticky
+    int st = 0;
+    for(int i = 22; i >= 0; i--){
+        st = (st|(as>>(1))&1);
+    }
+
+        //v - Redondeo
+    if((r == 1 && st == 1) || (r == 1 && st == 0 && (ps>>0)&1 == 1)){
+        ps = ps + 1;
+    }
+
+        //COMPROBACION DE DESBORDAMIENTO
+        //Desbordamiento a infinito
+    if (exponenteProd >= 255){
+        this->overFlow = true;
+        return;
+    }
+
+        //desbordamiento a cero
+    if(exponenteProd < 1){
+        int t = 1 - exponenteProd;
+
+        if(!(t >= 24)){
+            //desplazar P y A t bits aritmétricamente
+            for(int i = 0; i < t; i++){
+                ps = ps >> 1;
+                if((ps >> 23)&1){
+                    ps = ps|8388608;
+                }
+            }
+            exponenteProd = 1;
+        }else{
+            this->underFlow = true;
+        }
+    }
+
+    //OPERANDOS DENORMALES
+    if(this->num1.bits.exponente == 0 || this->num2.bits.exponente == 0){
+        //caso1
+        if(exponenteProd < 1){
+            int t = 1 - exponenteProd;
+            if(!t >= 24){
+                //desplazar P y A t bits aritméticamente
+                for(int i = 0; i < t; i++){
+                    ps = ps >> 1;
+                    if((ps>>23)&1){
+                        ps = ps|8388608;
+                    }
+                }
+                exponenteProd = 1;
+            }
+            //caso2
+        }else if(exponenteProd > 1){
+            int t1 = exponenteProd - 1;
+            int t2;
+            unsigned int aux = ps;
+
+            while(!((aux>>0)&1)){
+                aux = aux >> 1;
+                t2 = t2 + 1;
+            }
+            int t;
+            if(t1 > t2){
+                t = t2;
+            }else{
+                t = t1;
+            }
+            exponenteProd = exponenteProd - t;
+
+            for(int i = 0; i < t; i++){
+                ps = ps << 1;
+                if((ps>>23)&1){
+                    as = as>>1;
+                    as = as|8388608;
+                }
+            }
+            //caso3
+        }else{
+
+        }
+
+    }
+}
+
+void Alu::algoritmoProductoSinSigno(unsigned int A, unsigned int B) {
+    as = A;
+    ps = 0;
+    //Se repite n veces
+    for(int i = 0; i < 24; i++){
+        if(((as>>(0))&1)){
+            ps = ps + B;
+        }
+        ps = ps>>1;
+        as = as>>1;
+    }
+}
 
 unsigned int Alu:: comp2(unsigned int mantisaB){
     mantisaB = ~mantisaB + 1;
