@@ -278,6 +278,78 @@ void Alu::algoritmoProductoSinSigno(unsigned int A, unsigned int B) {
     }
 }
 
+void Alu::division(){
+    unsigned int ed, md, sd, e1, e2;
+
+    union operando aux1 = this->num1;
+    union operando aux2 = this->num2;
+
+    sd = this->num1.bits.signo^this->num2.bits.signo;
+    e1 = this->num1.bits.exponente;
+    e2 = this->num2.bits.exponente;
+
+    //paso1 ESCALAR A Y B PARA QUE B PERTENEZCA A [1,2)
+    float man1 = this->num1.bits.mantisa;
+    float num = 8388608;
+    float aR = 1 + man1/num;
+    float man2 = this->num2.bits.mantisa;
+    float bR = 1+man2/num;
+
+    //Paso2 Buscar en la tabla una solucion aproximada b
+    float b;
+    if(bR<1.25){
+        b = 1.00;
+    }else{
+        b = 0.80;
+    }
+
+    //Paso3
+    float X0 = productoP(aR, b);
+    float Y0 = productoP(bR, b);
+
+    //Paso 4 Se itera hasta que el valor entre un resultado y el de la operacion anterior sea menor que 10^4
+    bool primer = true;
+    float Xi = X0;
+    float Xa = 0;
+    float Yi = Y0;
+    float r = 0;
+
+    while(((abs(Xi-Xa))> pow(10, -4)) || (primer)){
+        primer = false;
+        Xa = Xi;
+        r = sumaP(2, -Yi);
+        Yi = productoP(Yi,r);
+        Xi = productoP(Xi, r);
+    }
+
+    //Pasar Xi a binario
+    union operando xi;
+    xi.decimal = Xi;
+    md = xi.bits.exponente;
+    ed = e1 - e2 + xi.bits.exponente;
+
+    this->resultado.bits.signo = sd;
+    this->resultado .bits.exponente = ed;
+    this->resultado.bits.mantisa = md;
+}
+
+float Alu::sumaP(float a, float b){
+    this->num1.decimal = a;
+    this->num2.decimal = b;
+    this->producto();
+
+    return resultado.decimal;
+
+}
+
+float Alu::productoP(float a, float b){
+    this->num1.decimal = a;
+    this->num2.decimal = b;
+    this->producto();
+
+    return resultado.decimal;
+}
+
 unsigned int Alu:: comp2(unsigned int mantisaB){
     mantisaB = ~mantisaB + 1;
     mantisaB = mantisaB^4278190080;

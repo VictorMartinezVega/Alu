@@ -1,5 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
+#include<iomanip>
+#include <sstream>
 
 #include <QMainWindow>
 

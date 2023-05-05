@@ -1,5 +1,6 @@
 #ifndef ALU_H
 #define ALU_H
+#include "math.h"
 
 
 class Alu
@@ -9,6 +10,9 @@ public:
     void suma();
     void producto();
     void algoritmoProductoSinSigno(unsigned int A, unsigned int B);
+    void division();
+    float sumaP(float a, float b);
+    float productoP(float a, float b);
     unsigned int comp2(unsigned int mantisaB);
 private:
     bool desbordamiento = false;

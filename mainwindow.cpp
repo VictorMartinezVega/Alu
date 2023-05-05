@@ -34,6 +34,6 @@ void MainWindow::on_producto_clicked()
 
 void MainWindow::on_division_clicked()
 {
-    ui->
+
 }
 
